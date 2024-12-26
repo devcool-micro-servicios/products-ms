@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   Injectable,
   Logger,
   NotFoundException,
@@ -10,6 +11,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaClient } from '@prisma/client';
 import { PaginationDto } from 'src/common';
 import { string } from 'joi';
+import { RpcException } from '@nestjs/microservices';
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger('ProductsService');
@@ -65,7 +67,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       },
     });
     if (!product) {
-      throw new NotFoundException(`No product found with id ${id}`);
+      throw new RpcException({
+        message: `No product found with id ${id}`,
+        status: HttpStatus.NOT_FOUND,
+      });
     }
     return product;
   }
@@ -81,7 +86,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         data: data,
       });
     } catch (e) {
-      throw new NotFoundException(`No product found with id ${id}`);
+      throw new RpcException({
+        message: `No product found with id ${id}`,
+        status: HttpStatus.NOT_FOUND,
+      });
     }
   }
   async remove(id: string) {
@@ -95,7 +103,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       });
     } catch (e) {
-      throw new NotFoundException(`No product found with id ${id}`);
+      throw new RpcException({
+        message: `No product found with id ${id}`,
+        status: HttpStatus.NOT_FOUND,
+      });
     }
   }
 }

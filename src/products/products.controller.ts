@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, ParseIntPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -23,13 +23,13 @@ export class ProductsController {
 
   //@Get(':id')
   @MessagePattern({ cmd: 'findOneProduct' })
-  findOne(@Payload() id: string) {
-    return this.productsService.findOne(+id);
+  findOne(@Payload('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(id);
   }
 
   //@Patch(':id')
   @MessagePattern({ cmd: 'updateProduct' })
-  update(@Payload() updateProductDto: UpdateProductDto) {
+  update(@Payload() updateProductDto: any) {
     return this.productsService.update(updateProductDto.id, updateProductDto);
   }
 
